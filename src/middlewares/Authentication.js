@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
+import 'dotenv/config';
+
+const verify = promisify(jwt.verify);
 
 export default async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -11,7 +14,7 @@ export default async (req, res, next) => {
   const [, token] = authHeader.split(' ');
 
   try {
-    const decoded = await promisify(jwt.verify)(token, 'env.secretKey');
+    const decoded = await verify(token, process.env.JWT_SECRET);
 
     req.userId = decoded.id;
 

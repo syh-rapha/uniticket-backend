@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
 
-class AccountController {
+class Users {
   async login(req, res) {
     const schema = Yup.object().shape({
       email: Yup.string()
@@ -36,11 +36,11 @@ class AccountController {
         name,
         email,
       },
-      token: jwt.sign({ id }, 'env.secretKey', {
-        expiresIn: 'env.daysToExpire',
+      token: jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '7d',
       }),
     });
   }
 }
 
-export default new AccountController();
+export default new Users();

@@ -1,7 +1,6 @@
 import express from 'express';
-// import path from 'path';
 
-import accountRouter from './routes/Account';
+import Users from './routes/Users';
 import authenticationMiddleware from './middlewares/Authentication';
 
 class App {
@@ -21,7 +20,7 @@ class App {
   }
 
   routes() {
-    this.server.use('/account', accountRouter);
+    this.server.use('/users', Users);
     this.server.use(authenticationMiddleware);
   }
 }
