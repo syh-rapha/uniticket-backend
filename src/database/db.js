@@ -1,6 +1,5 @@
 import knex from 'knex';
-import knexfile from '../config/knexfile';
-import 'dotenv/config';
+import knexfile from '../../knexfile';
 
 const env = process.env.NODE_ENV;
 const configOptions = knexfile[env];

@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
-import 'dotenv/config';
 
 const verify = promisify(jwt.verify);
 

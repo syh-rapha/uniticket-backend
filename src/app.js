@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 
 import Users from './routes/Users';
@@ -21,7 +22,7 @@ class App {
 
   routes() {
     this.server.use('/users', Users);
-    this.server.use(authenticationMiddleware);
+    // this.server.use(authenticationMiddleware);
   }
 }
 

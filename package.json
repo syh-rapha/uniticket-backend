@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "migrate": "npx knex --knexfile=./src/config/knexfile.js migrate:latest",
-    "rollback": "npx knex --knexfile=./src/config/knexfile.js migrate:rollback",
-    "seed": "npx knex --knexfile=./src/config/knexfile.js seed:run"
+    "migrate": "npx knex migrate:latest",
+    "rollback": "npx knex migrate:rollback",
+    "seed": "npx knex seed:run"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
