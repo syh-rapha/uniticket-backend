@@ -24,7 +24,7 @@ router.post('/reset_password/:token', (req, res, next) => {
 });
 
 router.get('/creation_confirmation/:token', (req, res, next) => {
-  res.json('Esqueceu senha');
+  Users.creation_confirmation(req, res);
 });
 
 export default router;

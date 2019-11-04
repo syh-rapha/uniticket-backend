@@ -9,10 +9,12 @@ exports.up = async knex => {
       .defaultTo(false)
       .notNullable();
     tbl
-      .boolean('admin')
-      .defaultTo('false')
+      .enu('role', ['admin', 'discente', 'servidor', 'visitante'], {
+        userNative: true,
+        enumName: 'role',
+      })
+      .defaultTo('visitante')
       .notNullable();
-    tbl.integer('jwt_exp_time');
     tbl.string('reset_token', [16]);
     tbl.string('confirmation_token', [16]);
     tbl.timestamps(true, true);

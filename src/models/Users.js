@@ -5,30 +5,21 @@ class Users {
     return db('users');
   }
 
-  async findByEmail(email) {
-    return db('users').where({
-      email,
-    });
+  async insert(returning, insert) {
+    return db('users')
+      .returning(returning)
+      .insert(insert);
   }
 
-  async add(name, email, password, confirmation_token) {
+  async update(returning, where, update) {
     return db('users')
-      .returning(['id', 'name', 'email'])
-      .insert({
-        name,
-        email,
-        password,
-        confirmation_token,
-      });
+      .returning(returning)
+      .where(where)
+      .update(update);
   }
 
-  async setResetToken(email, reset_token) {
-    return db('users')
-      .returning('name')
-      .where({ email })
-      .update({
-        reset_token,
-      });
+  async find(where) {
+    return db('users').where(where);
   }
 }
 
