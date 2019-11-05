@@ -2,7 +2,9 @@ import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-import Mail from '../lib/mail';
+import RecoveryPasswordMail from '../jobs/RecoveryPasswordMail';
+import CreationConfirmationMail from '../jobs/CreationConfirmationMail';
+import Queue from '../lib/Queue';
 import UsersModel from '../models/Users';
 import PasswordHasher from '../services/password_hasher';
 
@@ -72,7 +74,6 @@ class Users {
     // eslint-disable-next-line prefer-const
     let { name, email, password } = req.body;
     let user;
-
     try {
       user = await UsersModel.find({ email });
     } catch (e) {
@@ -90,15 +91,12 @@ class Users {
         password,
         confirmation_token,
       });
-      await Mail.sendMail({
-        to: `${name} <${email}>`,
-        subject: 'Confirmação de Cadastro',
-        template: 'confirm_creation',
-        context: {
-          username: name,
-          confirmation_url: `${process.env.APP_URL}/users/creation_confirmation/${confirmation_token}`,
-        },
+      await Queue.add(CreationConfirmationMail.key, {
+        name,
+        email,
+        confirmation_token,
       });
+
       return res.json(saved_user);
     }
     return res.status(400).json({ error: 'Usuário já cadastrado.' });
@@ -128,15 +126,7 @@ class Users {
           { email },
           { reset_token }
         );
-        await Mail.sendMail({
-          to: `${name} <${email}>`,
-          subject: 'Redefinição de Senha',
-          template: 'reset_password',
-          context: {
-            username: name,
-            confirmation_url: `${process.env.APP_URL}/users/reset_password/${reset_token}`,
-          },
-        });
+        await Queue.add(RecoveryPasswordMail.key, { name, email, reset_token });
       } catch (e) {
         return res
           .status(503)

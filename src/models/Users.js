@@ -2,24 +2,28 @@ import db from '../database/db';
 
 class Users {
   async getAll() {
-    return db('users');
+    return db('Users').debug();
   }
 
   async insert(returning, insert) {
-    return db('users')
+    return db('Users')
       .returning(returning)
-      .insert(insert);
+      .insert(insert)
+      .debug();
   }
 
   async update(returning, where, update) {
-    return db('users')
+    return db('Users')
       .returning(returning)
       .where(where)
-      .update(update);
+      .update(update)
+      .debug();
   }
 
   async find(where) {
-    return db('users').where(where);
+    return db('Users')
+      .where(where)
+      .debug();
   }
 }
 
