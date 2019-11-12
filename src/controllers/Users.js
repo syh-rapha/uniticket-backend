@@ -8,6 +8,7 @@ import Queue from '../lib/Queue';
 import UsersModel from '../models/Users';
 import PasswordHasher from '../services/password_hasher';
 
+const ONE_YEAR_JWT = '365d';
 class Users {
   async login(req, res) {
     const schema = Yup.object().shape({
@@ -44,7 +45,7 @@ class Users {
             email,
           },
           token: jwt.sign({ id }, process.env.JWT_SECRET, {
-            expiresIn: '0.5h',
+            expiresIn: ONE_YEAR_JWT,
           }),
         });
       }
