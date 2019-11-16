@@ -25,6 +25,13 @@ class Users {
       .increment(increment);
   }
 
+  async decrement(returning, where, decrement) {
+    return db('Users')
+      .returning(returning)
+      .where(where)
+      .decrement(decrement);
+  }
+
   async find(where) {
     return db('Users').where(where);
   }
