@@ -16,6 +16,7 @@ export default async (req, res, next) => {
     const decoded = await verify(token, process.env.JWT_SECRET);
 
     req.userId = decoded.id;
+    req.role = decoded.role;
 
     return next();
   } catch (err) {

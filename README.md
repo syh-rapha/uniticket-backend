@@ -8,6 +8,10 @@ Para instalar as dependências do projeto execute o comando
 
 `yarn`
 
+Além disso, será necessário configurar um Docker Container com uma imagem do redis, para isso, com o Docker instalado, digite o seguinte comando:
+
+`docker run --name redis_uniticket -p 6379:6379 -d -t redis:alpine`
+
 ## Executar
 
 Para executar a aplicação

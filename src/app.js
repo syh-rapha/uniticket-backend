@@ -4,6 +4,8 @@ import 'express-async-errors';
 
 import Users from './routes/Users';
 import Transactions from './routes/Transactions';
+import Ingredientes from './routes/Ingredientes';
+import Cardapio from './routes/Cardapio';
 import authenticationMiddleware from './middlewares/Authentication';
 
 class App {
@@ -22,6 +24,8 @@ class App {
     this.server.use('/users', Users);
     this.server.use(authenticationMiddleware);
     this.server.use('/transactions', Transactions);
+    this.server.use('/ingredientes', Ingredientes);
+    this.server.use('/cardapio', Cardapio);
   }
 }
 

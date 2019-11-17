@@ -28,7 +28,7 @@ class Users {
 
     const user = await UsersModel.find({ email });
     if (Array.isArray(user) && user.length) {
-      const { id, name, password: stored_password, active } = user[0];
+      const { id, name, password: stored_password, active, role } = user[0];
 
       if (active) {
         if (
@@ -44,7 +44,7 @@ class Users {
             name,
             email,
           },
-          token: jwt.sign({ id }, process.env.JWT_SECRET, {
+          token: jwt.sign({ id, role }, process.env.JWT_SECRET, {
             expiresIn: ONE_YEAR_JWT,
           }),
         });
@@ -56,14 +56,14 @@ class Users {
 
   async create(req, res) {
     const schema = Yup.object().shape({
-      name: Yup.string().required('Nome é obrigatório'),
+      name: Yup.string().required('Nome é obrigatório.'),
       email: Yup.string()
         .email()
-        .required('Email é obrigatório'),
-      password: Yup.string().required('Senha é obrigatória'),
+        .required('Email é obrigatório.'),
+      password: Yup.string().required('Senha é obrigatória.'),
       password_confirmation: Yup.string()
         .required()
-        .oneOf([Yup.ref('password'), null], 'As senhas devem coincidir'),
+        .oneOf([Yup.ref('password'), null], 'As senhas devem coincidir.'),
     });
 
     try {
@@ -107,7 +107,7 @@ class Users {
     const schema = Yup.object().shape({
       email: Yup.string()
         .email()
-        .required('Email é obrigatório'),
+        .required('Email é obrigatório.'),
     });
 
     try {
@@ -129,29 +129,32 @@ class Users {
         );
         await Queue.add(RecoveryPasswordMail.key, { name, email, reset_token });
       } catch (e) {
-        return res
-          .status(503)
-          .json('Falha ao estabelecer conexão com banco de dados!');
+        return res.status(503).json({
+          message: 'Falha ao gerar link de redefinição de senha.',
+          error: e,
+        });
       }
     }
     return res.json(
-      `Se ${email} for um e-mail válido, um link de redefinição de senha foi enviado`
+      `Se ${email} for um e-mail válido, um link de redefinição de senha foi enviado.`
     );
   }
 
   async reset_password(req, res) {
     let user;
     const schema = Yup.object().shape({
-      password: Yup.string().required('Senha é obrigatória'),
+      password: Yup.string().required('Senha é obrigatória.'),
       password_confirmation: Yup.string()
         .required()
-        .oneOf([Yup.ref('password'), null], 'As senhas devem coincidir'),
+        .oneOf([Yup.ref('password'), null], 'As senhas devem coincidir.'),
     });
 
     try {
       user = await UsersModel.find({ reset_token: req.params.token });
     } catch (e) {
-      return res.status(400).json({ error: 'Erro ao redefinir senha.' });
+      return res
+        .status(400)
+        .json({ message: 'Falha ao redefinir senha.', error: e });
     }
 
     try {
@@ -171,7 +174,9 @@ class Users {
       );
       return res.status(200).json('Senha alterada com sucesso!');
     } catch (e) {
-      return res.status(400).json({ error: 'Erro ao redefinir senha.' });
+      return res
+        .status(400)
+        .json({ message: 'Falha ao redefinir senha.', error: e });
     }
   }
 
@@ -187,7 +192,7 @@ class Users {
     } catch (e) {
       return res
         .status(503)
-        .json('Falha ao estabelecer conexão com banco de dados!');
+        .json({ message: 'Falha ao ativar conta.', error: e });
     }
   }
 }

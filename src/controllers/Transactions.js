@@ -29,11 +29,13 @@ class Transactions {
         user_id: req.userId,
       });
       return res.status(200).json({
-        message: 'Créditos adquiridos com sucesso',
+        message: 'Créditos adquiridos com sucesso.',
         creditos: creditos[0],
       });
     } catch (e) {
-      return res.status(500).json({ error: 'Falha ao adquirir créditos' });
+      return res
+        .status(500)
+        .json({ message: 'Falha ao adquirir créditos.', error: e });
     }
   }
 }
