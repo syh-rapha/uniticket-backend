@@ -19,11 +19,11 @@ router.post('/forgot_password', (req, res, next) => {
   Users.forgot_password(req, res);
 });
 
-router.post('/reset_password/:token', (req, res, next) => {
+router.post('/reset_password', (req, res, next) => {
   Users.reset_password(req, res);
 });
 
-router.get('/creation_confirmation/:token', (req, res, next) => {
+router.get('/creation_confirmation', (req, res, next) => {
   Users.creation_confirmation(req, res);
 });
 

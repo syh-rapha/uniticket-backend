@@ -5,7 +5,7 @@ import TransactionsModel from '../models/Transactions';
 class Transactions {
   async adquirir_creditos(req, res) {
     const schema = Yup.object().shape({
-      qtdCreditos: Yup.number()
+      quantidadeCreditos: Yup.number()
         .moreThan(0)
         .required('Quantidade de créditos deve ser maior que 0.'),
     });
@@ -16,13 +16,13 @@ class Transactions {
       return res.status(400).json({ error: e.errors });
     }
 
-    const { qtdCreditos } = req.body;
+    const { quantidadeCreditos } = req.body;
 
     try {
       const creditos = await UsersModel.increment(
         'creditos',
         { id: req.userId },
-        { creditos: qtdCreditos }
+        { creditos: quantidadeCreditos }
       );
       await TransactionsModel.insert(['*'], {
         type: 'adquirir_credito',

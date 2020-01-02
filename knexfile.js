@@ -3,16 +3,16 @@ require('dotenv').config();
 module.exports = {
   development: {
     client: 'pg',
-    connection: process.env.REMOTE_DB_URL,
+    connection: process.env.POSTGRES_URL,
     migrations: {
       directory: './src/database/migrations',
     },
     seeds: { directory: './src/database/seeds' },
   },
 
-  testing: {
+  test: {
     client: 'pg',
-    connection: process.env.REMOTE_DB_URL,
+    connection: process.env.POSTGRES_TEST_URL,
     migrations: {
       directory: './src/database/migrations',
     },
@@ -21,7 +21,7 @@ module.exports = {
 
   production: {
     client: 'pg',
-    connection: process.env.REMOTE_DB_URL,
+    connection: process.env.POSTGRES_URL,
     migrations: {
       directory: './src/database/migrations',
     },

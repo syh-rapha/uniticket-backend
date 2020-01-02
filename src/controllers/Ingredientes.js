@@ -83,7 +83,7 @@ class Ingredientes {
     const schema = Yup.object().shape({
       nome: Yup.string()
         .max(100)
-        .required(''),
+        .required('Nome do ingrediente é obrigatório.'),
     });
 
     try {

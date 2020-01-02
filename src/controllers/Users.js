@@ -38,7 +38,7 @@ class Users {
             .status(401)
             .json({ error: 'Usuário e/ou senha incorretos.' });
         }
-        return res.json({
+        return res.status(200).json({
           user: {
             id,
             name,
@@ -98,7 +98,7 @@ class Users {
         confirmation_token,
       });
 
-      return res.json(saved_user);
+      return res.status(200).json(...saved_user);
     }
     return res.status(400).json({ error: 'Usuário já cadastrado.' });
   }
@@ -135,9 +135,7 @@ class Users {
         });
       }
     }
-    return res.json(
-      `Se ${email} for um e-mail válido, um link de redefinição de senha foi enviado.`
-    );
+    return res.sendStatus(204);
   }
 
   async reset_password(req, res) {
@@ -148,19 +146,25 @@ class Users {
         .required()
         .oneOf([Yup.ref('password'), null], 'As senhas devem coincidir.'),
     });
+    const schema2 = Yup.object().shape({
+      reset_token: Yup.string()
+        .required('Token não informado')
+        .length(16, 'Token inválido'),
+    });
 
     try {
-      user = await UsersModel.find({ reset_token: req.params.token });
+      await schema.validate(req.body);
+      await schema2.validate(req.query);
+    } catch (e) {
+      return res.status(400).json({ error: e.errors });
+    }
+    const { reset_token } = req.query;
+    try {
+      user = await UsersModel.find({ reset_token });
     } catch (e) {
       return res
         .status(400)
         .json({ message: 'Falha ao redefinir senha.', error: e });
-    }
-
-    try {
-      await schema.validate(req.body);
-    } catch (e) {
-      return res.status(400).json({ error: e.errors });
     }
 
     let { password } = req.body;
@@ -172,7 +176,7 @@ class Users {
         { id: user[0].id },
         { password, reset_token: null }
       );
-      return res.status(200).json('Senha alterada com sucesso!');
+      return res.status(200).json({ message: 'Senha alterada com sucesso!' });
     } catch (e) {
       return res
         .status(400)
@@ -181,14 +185,27 @@ class Users {
   }
 
   async creation_confirmation(req, res) {
-    const confirmation_token = req.params.token;
+    const schema = Yup.object().shape({
+      confirmation_token: Yup.string()
+        .required('Token não informado')
+        .length(16, 'Token inválido'),
+    });
+
+    try {
+      await schema.validate(req.query);
+    } catch (e) {
+      return res.status(400).json({ error: e.errors });
+    }
+
+    const { confirmation_token } = req.query;
+
     try {
       await UsersModel.update(
         ['id'],
         { confirmation_token },
         { active: true, confirmation_token: null }
       );
-      return res.status(200).json('Conta ativada com sucesso.');
+      return res.sendStatus(204);
     } catch (e) {
       return res
         .status(503)
