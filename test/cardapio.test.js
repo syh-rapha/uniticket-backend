@@ -2,8 +2,8 @@
 import { authenticatedUser, seedIngredientes } from './mocks';
 
 const request = require('supertest');
-const app = require('../app');
-const db = require('../database/db');
+const app = require('../src/app.js');
+const db = require('../src/database/db');
 
 let jwt_token;
 

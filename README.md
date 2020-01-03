@@ -2,21 +2,36 @@
 
 Repositório destinado ao backend da aplicação UniTicket
 
-## Dependências
-
-Para instalar as dependências do projeto execute o comando
-
-`yarn`
-
-Além disso, será necessário configurar um Docker Container com uma imagem do redis, para isso, com o Docker instalado, digite o seguinte comando:
-
-`docker run --name redis_uniticket -p 6379:6379 -d -t redis:alpine`
-
 ## Executar
 
-Para executar a aplicação
+### Desenvolvimento
+
+Para executar a aplicação em modo de desenvolvimento configure as variáveis de
+ambiente (exceto as da API) no arquivo `docker-compose.yaml`. Utilizando o modelo
+do arquivo `env.example` crie um arquivo na raiz do projeto nomeado `.env` e 
+configure as variáveis de ambiente da API. Em seguida execute os seguintes comandos:
+
+`docker-compose up -d --build postgres_uniticket redis_uniticket postgres_test_uniticket`
 
 `yarn dev`
+
+Caso queira a funcionalidade de envio de emails abra um novo terminal e execute:
+
+`yarn queue`
+
+### Produção
+
+Para executar a aplicação em modo de produção remova a configuração do serviço de
+banco de dados de testes do arquivo `docker-compose.yaml` e configure as variáveis
+de ambiente presentes no arquivo. Em seguida execute o seguinte comando:
+
+`docker-compose up -d --build` 
+
+## Testes
+
+Com a aplicação configurada no modo de desenvolvimento, execute:
+
+`yarn test`
 
 ## Migrations
 
@@ -24,7 +39,7 @@ As tabelas do banco de dados devem ser criadas e/ou alteradas através das migra
 
 ### Criar Migration
 
-`npx knex migrate:make nome_da_migration`
+`npx knex --knexfile src/knexfile.js migrate:make nome_da_migration`
 
 ### Executar Migration
 
@@ -33,7 +48,3 @@ As tabelas do banco de dados devem ser criadas e/ou alteradas através das migra
 ### Desfazer Migration
 
 `yarn rollback`
-
-## Envs
-
-Para o correto funcionamento da aplicação é necessário configurar as variáveis de ambiente. Para isso, crie o arquivo `.env` na raiz do projeto e defina as variáveis conforme o padrão contido em `.env.example`.

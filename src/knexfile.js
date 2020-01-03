@@ -1,30 +1,30 @@
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 
 module.exports = {
   development: {
     client: 'pg',
     connection: process.env.POSTGRES_URL,
     migrations: {
-      directory: './src/database/migrations',
+      directory: './database/migrations',
     },
-    seeds: { directory: './src/database/seeds' },
+    seeds: { directory: './database/seeds' },
   },
 
   test: {
     client: 'pg',
     connection: process.env.POSTGRES_TEST_URL,
     migrations: {
-      directory: './src/database/migrations',
+      directory: './database/migrations',
     },
-    seeds: { directory: './src/database/seeds' },
+    seeds: { directory: './database/seeds' },
   },
 
   production: {
     client: 'pg',
     connection: process.env.POSTGRES_URL,
     migrations: {
-      directory: './src/database/migrations',
+      directory: './database/migrations',
     },
-    seeds: { directory: './src/database/seeds' },
+    seeds: { directory: './database/seeds' },
   },
 };

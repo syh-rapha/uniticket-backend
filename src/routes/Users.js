@@ -1,5 +1,6 @@
 import express from 'express';
 import Users from '../controllers/Users';
+import authenticationMiddleware from '../middlewares/Authentication';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.post('/login', (req, res, next) => {
   Users.login(req, res);
 });
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', authenticationMiddleware, (req, res, next) => {
   Users.logout(req, res);
 });
 

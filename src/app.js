@@ -7,6 +7,7 @@ import Transactions from './routes/Transactions';
 import Ingredientes from './routes/Ingredientes';
 import Cardapio from './routes/Cardapio';
 import authenticationMiddleware from './middlewares/Authentication';
+import aclMiddleware from './middlewares/Acl';
 
 class App {
   constructor() {
@@ -23,6 +24,7 @@ class App {
   routes() {
     this.server.use('/users', Users);
     this.server.use(authenticationMiddleware);
+    this.server.use(aclMiddleware);
     this.server.use('/transactions', Transactions);
     this.server.use('/ingredientes', Ingredientes);
     this.server.use('/cardapio', Cardapio);

@@ -7,8 +7,8 @@ import CreationConfirmationMail from '../jobs/CreationConfirmationMail';
 import Queue from '../lib/Queue';
 import UsersModel from '../models/Users';
 import PasswordHasher from '../services/password_hasher';
+import redis from '../database/redis';
 
-const ONE_YEAR_JWT = '365d';
 class Users {
   async login(req, res) {
     const schema = Yup.object().shape({
@@ -45,7 +45,7 @@ class Users {
             email,
           },
           token: jwt.sign({ id, role }, process.env.JWT_SECRET, {
-            expiresIn: ONE_YEAR_JWT,
+            expiresIn: process.env.JWT_EXPIRATION_TIME,
           }),
         });
       }
@@ -211,6 +211,19 @@ class Users {
         .status(503)
         .json({ message: 'Falha ao ativar conta.', error: e });
     }
+  }
+
+  async logout(req, res) {
+    const todayInSeconds = Math.floor(new Date().getTime() / 1000);
+    const timeToExpire = +req.tokenExpiration - todayInSeconds;
+    try {
+      await redis.setAsync(req.token, true, 'EX', timeToExpire);
+    } catch (e) {
+      return res
+        .status(500)
+        .json({ message: 'Falha ao realizar logout.', error: e });
+    }
+    return res.sendStatus(204);
   }
 }
 

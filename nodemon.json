@@ -1,5 +1,4 @@
 {
-  "execMap": {
-    "js": "sucrase-node"
-  }
+  "watch": ["src"],
+  "exec": "(yarn build && node -r dotenv/config dist/server.js) || exit 1"
 }

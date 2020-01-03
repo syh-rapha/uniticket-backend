@@ -1,21 +1,24 @@
 {
   "name": "uniticket-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "repository": "git@github.com:francoraphael/uniticket-backend.git",
   "author": "raphaelfrnc@gmail.com",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "queue": "nodemon src/queue.js",
-    "migrate": "npx knex migrate:latest",
-    "rollback": "npx knex migrate:rollback",
-    "seed": "npx knex seed:run",
-    "migrate:reset": "npx knex migrate:rollback --all && yarn migrate",
+    "build": "babel src -d dist --copy-files",
+    "serve": "node dist/server.js",
+    "queue": "node dist/queue.js",
+    "dev": "nodemon",
+    "migrate": "npx knex --knexfile src/knexfile.js migrate:latest",
+    "rollback": "npx knex --knexfile src/knexfile.js migrate:rollback",
+    "seed": "npx knex --knexfile src/knexfile.js seed:run",
+    "migrate:reset": "npx knex --knexfile src/knexfile.js migrate:rollback --all && yarn migrate",
     "test": "jest --detectOpenHandles",
     "pretest": "cross-env NODE_ENV=test npm run migrate:reset"
   },
   "devDependencies": {
+    "@babel/cli": "^7.7.7",
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "babel-jest": "^24.9.0",
@@ -28,12 +31,12 @@
     "jest": "^24.9.0",
     "nodemon": "^1.19.4",
     "prettier": "^1.18.2",
-    "sucrase": "^3.10.1",
     "supertest": "^4.0.2"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bee-queue": "^1.2.2",
+    "bluebird": "^3.7.2",
     "date-fns": "^2.6.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -44,6 +47,7 @@
     "nodemailer": "^6.3.1",
     "nodemailer-express-handlebars": "^3.1.0",
     "pg": "^7.12.1",
+    "redis": "^2.8.0",
     "youch": "^2.0.10",
     "yup": "^0.27.0"
   }
