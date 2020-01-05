@@ -3,7 +3,7 @@ const app = require('../src/app.js');
 const db = require('../src/database/db');
 
 export const authenticatedUser = async () => {
-  await db('Users').insert({
+  await db('users').insert({
     name: 'Raphael',
     email: 'raphaelfrnc@outlook.com',
     password: '$2y$08$5i6QrTVQZHZcakJ8r1OjHeVOfhkSPLRv5ey/A4j7CiMDj5dYRe6D2',
@@ -11,7 +11,7 @@ export const authenticatedUser = async () => {
     active: true,
   });
   const res = await request(app)
-    .post('/users/login')
+    .post(`${process.env.BASE_PATH}/users/login`)
     .send({
       email: 'raphaelfrnc@outlook.com',
       password: 'senha123',
@@ -19,46 +19,46 @@ export const authenticatedUser = async () => {
   return res.body.token;
 };
 
-export const seedIngredientes = async () => {
-  const ingredientes = [
+export const seedIngredients = async () => {
+  const ingredients = [
     {
-      nome: 'Batata Doce',
-      tipo: 'salada',
+      name: 'Batata Doce',
+      type: 'salad',
     },
     {
-      nome: 'Carne de Panela',
-      tipo: 'principal',
+      name: 'Carne de Panela',
+      type: 'main_course',
     },
     {
-      nome: 'Arroz Branco',
-      tipo: 'acompanhamento',
+      name: 'Arroz Branco',
+      type: 'side_dish',
     },
     {
-      nome: 'Feijão Carioca',
-      tipo: 'acompanhamento',
+      name: 'Feijão Carioca',
+      type: 'side_dish',
     },
     {
-      nome: 'Banana',
-      tipo: 'sobremesa',
+      name: 'Banana',
+      type: 'dessert',
     },
     {
-      nome: 'Peixe Frito',
-      tipo: 'principal',
+      name: 'Peixe Frito',
+      type: 'main_course',
     },
     {
-      nome: 'Arroz Integral',
-      tipo: 'acompanhamento',
+      name: 'Arroz Integral',
+      type: 'side_dish',
     },
     {
-      nome: 'Feijão Preto',
-      tipo: 'acompanhamento',
+      name: 'Feijão Preto',
+      type: 'side_dish',
     },
     {
-      nome: 'Maça',
-      tipo: 'sobremesa',
+      name: 'Maça',
+      type: 'dessert',
     },
   ];
-  await db.batchInsert('Ingredientes', ingredientes, 9);
+  await db.batchInsert('ingredients', ingredients, 9);
 };
 
 export const noop = () => {};

@@ -1,31 +1,20 @@
 import express from 'express';
-import Users from '../controllers/Users';
-import authenticationMiddleware from '../middlewares/Authentication';
+import Users from '../controllers/users';
+import authenticationMiddleware from '../middlewares/authentication';
+import aclMiddleware from '../middlewares/acl';
 
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
-  Users.create(req, res);
-});
+router.post('/', authenticationMiddleware, aclMiddleware, Users.create);
 
-router.post('/login', (req, res, next) => {
-  Users.login(req, res);
-});
+router.post('/login', Users.login);
 
-router.get('/logout', authenticationMiddleware, (req, res, next) => {
-  Users.logout(req, res);
-});
+router.get('/logout', authenticationMiddleware, Users.logout);
 
-router.post('/forgot_password', (req, res, next) => {
-  Users.forgot_password(req, res);
-});
+router.post('/forgot-password', Users.forgotPassword);
 
-router.post('/reset_password', (req, res, next) => {
-  Users.reset_password(req, res);
-});
+router.post('/reset-password', Users.resetPassword);
 
-router.get('/creation_confirmation', (req, res, next) => {
-  Users.creation_confirmation(req, res);
-});
+router.get('/creation-confirmation', Users.creationConfirmation);
 
 export default router;

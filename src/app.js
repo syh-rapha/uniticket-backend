@@ -1,13 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import 'express-async-errors';
-
-import Users from './routes/Users';
-import Transactions from './routes/Transactions';
-import Ingredientes from './routes/Ingredientes';
-import Cardapio from './routes/Cardapio';
-import authenticationMiddleware from './middlewares/Authentication';
-import aclMiddleware from './middlewares/Acl';
+import Version from './routes/version';
+import indexRouter from './index-router';
 
 class App {
   constructor() {
@@ -22,12 +17,14 @@ class App {
   }
 
   routes() {
-    this.server.use('/users', Users);
-    this.server.use(authenticationMiddleware);
-    this.server.use(aclMiddleware);
-    this.server.use('/transactions', Transactions);
-    this.server.use('/ingredientes', Ingredientes);
-    this.server.use('/cardapio', Cardapio);
+    this.server.use('/version', Version);
+    this.server.use(process.env.BASE_PATH, indexRouter);
+    this.server.use((err, req, res, next) => {
+      if (err.name === 'ValidationError')
+        res.status(422).json({ message: err.message });
+      else if (err.table) res.status(500).json({ message: err.detail });
+      else res.status(500).json(err);
+    });
   }
 }
 

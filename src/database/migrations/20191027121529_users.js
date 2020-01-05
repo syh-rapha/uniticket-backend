@@ -1,5 +1,5 @@
 exports.up = async knex => {
-  return knex.schema.createTable('Users', tbl => {
+  return knex.schema.createTable('users', tbl => {
     tbl
       .bigIncrements('id')
       .primary()
@@ -12,14 +12,14 @@ exports.up = async knex => {
       .defaultTo(false)
       .notNullable();
     tbl
-      .enu('role', ['admin', 'discente', 'servidor', 'visitante'], {
+      .enu('role', ['admin', 'student', 'servant', 'visitor'], {
         userNative: true,
         enumName: 'role',
       })
-      .defaultTo('visitante')
+      .defaultTo('visitor')
       .notNullable();
     tbl
-      .integer('creditos')
+      .integer('credits')
       .defaultTo(0)
       .notNullable();
     tbl.string('reset_token', [16]);
@@ -28,4 +28,4 @@ exports.up = async knex => {
   });
 };
 
-exports.down = async knex => knex.schema.dropTableIfExists('Users');
+exports.down = async knex => knex.schema.dropTableIfExists('users');

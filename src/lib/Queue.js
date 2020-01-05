@@ -1,7 +1,7 @@
 import Bee from 'bee-queue';
 import redisConfig from '../config/redis';
-import RecoveryPasswordMail from '../jobs/RecoveryPasswordMail';
-import CreationConfirmationMail from '../jobs/CreationConfirmationMail';
+import RecoveryPasswordMail from '../jobs/recovery-password-mail';
+import CreationConfirmationMail from '../jobs/creation-confirmation-mail';
 
 const jobs = [RecoveryPasswordMail, CreationConfirmationMail];
 

@@ -2,31 +2,38 @@ import db from '../database/db';
 
 class Users {
   async getAll() {
-    return db('Users');
+    return db('users');
   }
 
   async insert(returning, insert) {
-    return db('Users')
+    return db('users')
       .returning(returning)
       .insert(insert);
   }
 
   async update(returning, where, update) {
-    return db('Users')
+    return db('users')
       .returning(returning)
       .where(where)
-      .update(update);
+      .update({ ...update, updated_at: new Date() });
   }
 
   async increment(returning, where, increment) {
-    return db('Users')
+    return db('users')
       .returning(returning)
       .where(where)
-      .increment(increment);
+      .increment(increment)
+      .update({ updated_at: new Date() });
   }
 
   async find(where) {
-    return db('Users').where(where);
+    return db('users').where(where);
+  }
+
+  async findOne(where) {
+    return db('users')
+      .where(where)
+      .first();
   }
 }
 

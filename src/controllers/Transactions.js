@@ -1,42 +1,32 @@
 import * as Yup from 'yup';
-import UsersModel from '../models/Users';
-import TransactionsModel from '../models/Transactions';
+import UsersModel from '../models/users';
+import TransactionsModel from '../models/transactions';
 
 class Transactions {
-  async adquirir_creditos(req, res) {
+  async acquireCredits(req, res) {
     const schema = Yup.object().shape({
-      quantidadeCreditos: Yup.number()
+      creditsQuantity: Yup.number()
         .moreThan(0)
-        .required('Quantidade de créditos deve ser maior que 0.'),
+        .required('Credits quantity should be more than 0'),
     });
 
-    try {
-      await schema.validate(req.body);
-    } catch (e) {
-      return res.status(400).json({ error: e.errors });
-    }
+    await schema.validate(req.body);
+    const { creditsQuantity } = req.body;
 
-    const { quantidadeCreditos } = req.body;
+    // TODO: definir como transaction e verificar creditos como array
+    const credits = await UsersModel.increment(
+      'credits',
+      { id: req.userId },
+      { credits: creditsQuantity }
+    );
+    await TransactionsModel.insert(['*'], {
+      type: 'acquire_credits',
+      user_id: req.userId,
+    });
 
-    try {
-      const creditos = await UsersModel.increment(
-        'creditos',
-        { id: req.userId },
-        { creditos: quantidadeCreditos }
-      );
-      await TransactionsModel.insert(['*'], {
-        type: 'adquirir_credito',
-        user_id: req.userId,
-      });
-      return res.status(200).json({
-        message: 'Créditos adquiridos com sucesso.',
-        creditos: creditos[0],
-      });
-    } catch (e) {
-      return res
-        .status(500)
-        .json({ message: 'Falha ao adquirir créditos.', error: e });
-    }
+    return res.status(200).json({
+      credits: credits[0],
+    });
   }
 }
 

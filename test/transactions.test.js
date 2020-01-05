@@ -4,8 +4,10 @@ import { authenticatedUser } from './mocks';
 const request = require('supertest');
 const app = require('../src/app.js');
 const db = require('../src/database/db');
+const redis = require('../src/database/redis');
 
 let jwt_token;
+const baseUrl = `${process.env.BASE_PATH}/transactions`;
 
 beforeAll(async () => {
   await db.raw('BEGIN TRANSACTION');
@@ -13,19 +15,20 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await redis.quitAsync();
   await db.raw('ROLLBACK');
 });
 
-describe('gerenciamento de transações', () => {
-  test('deve adquirir créditos', async () => {
+describe('transactions management', () => {
+  test('should acquire credits', async () => {
     const res = await request(app)
-      .post('/transactions/adquirir-creditos')
+      .post(`${baseUrl}/acquire-credits`)
       .set('Authorization', `Bearer ${jwt_token}`)
       .send({
-        quantidadeCreditos: 11,
+        creditsQuantity: 11,
       });
     expect(res.statusCode).toEqual(200);
     expect(res.type).toBe('application/json');
-    expect(res.body.creditos).toEqual(11);
+    expect(res.body.credits).toEqual(11);
   });
 });

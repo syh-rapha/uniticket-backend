@@ -1,5 +1,5 @@
 exports.up = async knex => {
-  return knex.schema.createTable('Transactions', tbl => {
+  return knex.schema.createTable('transactions', tbl => {
     tbl
       .bigIncrements('id')
       .primary()
@@ -8,27 +8,27 @@ exports.up = async knex => {
       .enu(
         'type',
         [
-          'adquirir_credito',
-          'transferir_credito',
-          'aplicar_credito',
-          'remover_credito',
+          'acquire_credits',
+          'transfer_credits',
+          'apply_credits',
+          'remove_credits',
         ],
         {
           userNative: true,
           enumName: 'transaction_type',
         }
       )
-      .defaultTo('adquirir_credito')
+      .defaultTo('acquire_credits')
       .notNullable();
     tbl
       .biginteger('user_id')
       .unsigned()
       .notNullable()
       .references('id')
-      .inTable('Users')
+      .inTable('users')
       .index();
     tbl.timestamps(true, true);
   });
 };
 
-exports.down = async knex => knex.schema.dropTableIfExists('Transactions');
+exports.down = async knex => knex.schema.dropTableIfExists('transactions');

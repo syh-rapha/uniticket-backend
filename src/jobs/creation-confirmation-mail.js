@@ -1,4 +1,4 @@
-import Mail from '../lib/Mail';
+import Mail from '../lib/mail';
 
 class CreationConfirmationMail {
   get key() {
@@ -6,14 +6,14 @@ class CreationConfirmationMail {
   }
 
   async handle({ data }) {
-    const { name, email, confirmation_token } = data;
+    const { name, email, confirmationToken } = data;
     await Mail.sendMail({
       to: `${name} <${email}>`,
       subject: 'Confirmação de Cadastro',
-      template: 'confirm_creation',
+      template: 'creation-confirmation',
       context: {
-        username: name,
-        confirmation_url: `${process.env.APP_URL}/users/creation_confirmation/${confirmation_token}`,
+        name,
+        confirmationUrl: `${process.env.FRONTEND_URL}/users/creation-confirmation/?confirmation_token=${confirmationToken}`,
       },
     });
   }

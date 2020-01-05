@@ -1,4 +1,4 @@
-import Mail from '../lib/Mail';
+import Mail from '../lib/mail';
 
 class RecoveryPasswordMail {
   get key() {
@@ -6,14 +6,14 @@ class RecoveryPasswordMail {
   }
 
   async handle({ data }) {
-    const { name, email, reset_token } = data;
+    const { name, email, resetToken } = data;
     await Mail.sendMail({
       to: `${name} <${email}>`,
       subject: 'Redefinição de Senha',
-      template: 'reset_password',
+      template: 'reset-password',
       context: {
-        username: name,
-        confirmation_url: `${process.env.APP_URL}/users/reset_password/${reset_token}`,
+        name,
+        resetUrl: `${process.env.FRONTEND_URL}/users/reset-password/?reset_token=${resetToken}`,
       },
     });
   }

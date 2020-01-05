@@ -7,8 +7,8 @@ class PasswordHasher {
     return bcrypt.hash(value, ROUNDS);
   }
 
-  async compare(provided_value, stored_value) {
-    return bcrypt.compare(provided_value, stored_value);
+  async compare(providedValue, storedValue) {
+    return bcrypt.compare(providedValue, storedValue);
   }
 }
 
