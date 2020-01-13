@@ -55,7 +55,7 @@ describe('user crud and authentication', () => {
   test('should activate an user account', async done => {
     await creationConfirmationCodeMock();
     const res = await request(app).get(
-      `${baseUrl}/creation-confirmation/?confirmation_token=${confirmationToken}`
+      `${baseUrl}/creation-confirmation?confirmation_token=${confirmationToken}`
     );
     expect(res.statusCode).toEqual(204);
     done();
@@ -87,7 +87,7 @@ describe('user crud and authentication', () => {
   test('should reset a password', async done => {
     await resetPasswordCodeMock();
     const res = await request(app)
-      .post(`${baseUrl}/reset-password/?reset_token=${resetToken}`)
+      .post(`${baseUrl}/reset-password?reset_token=${resetToken}`)
       .send({
         password: 'novaSenha123',
         passwordConfirmation: 'novaSenha123',

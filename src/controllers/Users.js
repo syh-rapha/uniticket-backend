@@ -5,10 +5,9 @@ import RecoveryPasswordMail from '../jobs/recovery-password-mail';
 import CreationConfirmationMail from '../jobs/creation-confirmation-mail';
 import Queue from '../lib/queue';
 import UsersModel from '../models/users';
+import CreditsPriceModel from '../models/credits-price';
 import PasswordHasher from '../services/password-hasher';
 import redis from '../database/redis';
-
-require('express-async-errors');
 
 class Users {
   async login(req, res) {
@@ -34,13 +33,14 @@ class Users {
         if (!(await PasswordHasher.compare(providedPassword, storedPassword))) {
           return res
             .status(401)
-            .json({ error: 'Username or password is incorret' });
+            .json({ error: 'Usuário e/ou senha incorreto.' });
         }
         return res.status(200).json({
           user: {
             id,
             name,
             email,
+            role,
           },
           token: jwt.sign({ id, role }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRATION_TIME,
@@ -49,7 +49,7 @@ class Users {
       }
       return res.status(403).json({ error: 'User blocked' });
     }
-    return res.status(401).json({ error: 'Username or password is incorret' });
+    return res.status(401).json({ error: 'Usuário e/ou senha incorreto.' });
   }
 
   async create(req, res) {
@@ -89,7 +89,7 @@ class Users {
 
       return res.status(201).json(...saved_user);
     }
-    return res.status(400).json({ error: 'User already exists' });
+    return res.status(400).json({ error: 'Usuário já cadastrado' });
   }
 
   async forgotPassword(req, res) {
@@ -157,13 +157,13 @@ class Users {
     await schema.validate(req.query);
     const { confirmation_token } = req.query;
 
-    await UsersModel.update(
+    const user = await UsersModel.update(
       ['id'],
       { confirmation_token },
       { active: true, confirmation_token: null }
     );
 
-    return res.sendStatus(204);
+    return user.length > 0 ? res.sendStatus(204) : res.sendStatus(406);
   }
 
   async logout(req, res) {
@@ -172,6 +172,15 @@ class Users {
     await redis.setAsync(req.token, true, 'EX', timeToExpire);
 
     return res.sendStatus(204);
+  }
+
+  async getCredits(req, res) {
+    const user = await UsersModel.findOne({ id: req.userId });
+    const creditPrice = await CreditsPriceModel.findOne({ role: user.role });
+
+    res
+      .status(200)
+      .json({ credits: user.credits, creditPrice: creditPrice.price });
   }
 }
 

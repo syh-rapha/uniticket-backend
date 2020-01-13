@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from 'cors';
 import 'express-async-errors';
 import Version from './routes/version';
 import indexRouter from './index-router';
@@ -14,6 +15,7 @@ class App {
 
   middlewares() {
     this.server.use(express.json());
+    this.server.use(cors());
   }
 
   routes() {

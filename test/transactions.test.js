@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { authenticatedUser } from './mocks';
+import { authenticatedUser, seedAcl } from './mocks';
 
 const request = require('supertest');
 const app = require('../src/app.js');
@@ -12,6 +12,7 @@ const baseUrl = `${process.env.BASE_PATH}/transactions`;
 beforeAll(async () => {
   await db.raw('BEGIN TRANSACTION');
   jwt_token = await authenticatedUser();
+  await seedAcl();
 });
 
 afterAll(async () => {

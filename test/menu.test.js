@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { authenticatedUser, seedIngredients } from './mocks';
+import { authenticatedUser, seedIngredients, seedAcl } from './mocks';
 
 const request = require('supertest');
 const app = require('../src/app.js');
@@ -12,6 +12,7 @@ const baseUrl = `${process.env.BASE_PATH}/menu`;
 beforeAll(async () => {
   await db.raw('BEGIN TRANSACTION');
   await seedIngredients();
+  await seedAcl();
   jwtToken = await authenticatedUser();
 });
 
@@ -29,6 +30,7 @@ describe('menu crud', () => {
         closed: false,
         salad: 'Batata Doce',
         mainCourse: 'Carne de Panela',
+        vegetarian: 'PTS',
         firstSideDish: 'Arroz Branco',
         secondSideDish: 'Feijão Carioca',
         dessert: 'Banana',
@@ -49,6 +51,7 @@ describe('menu crud', () => {
           closed: false,
           salad: 'Batata Doce',
           mainCourse: 'Carne de Panela',
+          vegetarian: 'PTS',
           firstSideDish: 'Arroz Branco',
           secondSideDish: 'Feijão Carioca',
           dessert: 'Banana',
@@ -61,12 +64,13 @@ describe('menu crud', () => {
 
   test('should update a menu', async done => {
     const res = await request(app)
-      .put(baseUrl)
+      .put(`${baseUrl}/1`)
       .set('Authorization', `Bearer ${jwtToken}`)
       .send({
         closed: false,
         salad: 'Batata Doce',
         mainCourse: 'Peixe Frito',
+        vegetarian: 'Torta de Lentilha',
         firstSideDish: 'Arroz Integral',
         secondSideDish: 'Feijão Preto',
         dessert: 'Maça',
@@ -79,7 +83,7 @@ describe('menu crud', () => {
 
   test('should delete a menu', async done => {
     const res = await request(app)
-      .delete(`${baseUrl}?day=2020-01-01`)
+      .delete(`${baseUrl}/1`)
       .set('Authorization', `Bearer ${jwtToken}`);
     expect(res.statusCode).toEqual(204);
     done();

@@ -13,6 +13,10 @@ exports.up = async knex => {
       .references('name')
       .inTable('ingredients');
     tbl
+      .string('vegetarian', [100])
+      .references('name')
+      .inTable('ingredients');
+    tbl
       .string('first_side_dish', [100])
       .references('name')
       .inTable('ingredients');
@@ -24,7 +28,10 @@ exports.up = async knex => {
       .string('dessert', [100])
       .references('name')
       .inTable('ingredients');
-    tbl.date('day').notNullable();
+    tbl
+      .date('day')
+      .notNullable()
+      .unique();
     tbl
       .boolean('closed')
       .notNullable()

@@ -1,7 +1,13 @@
 import * as Yup from 'yup';
 import IngredientsModel from '../models/ingredients';
 
-const ingredientTypes = ['salad', 'main_course', 'side_dish', 'dessert'];
+const ingredientTypes = [
+  'salad',
+  'main_course',
+  'vegetarian',
+  'side_dish',
+  'dessert',
+];
 class Ingredients {
   async add(req, res) {
     const schema = Yup.object().shape({

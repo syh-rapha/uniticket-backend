@@ -18,6 +18,13 @@ const defaultSchemaValidator = {
       then: Yup.string().required(),
       otherwise: Yup.string().notRequired(),
     }),
+  vegetarian: Yup.string()
+    .max(100)
+    .when('closed', {
+      is: false,
+      then: Yup.string().required(),
+      otherwise: Yup.string().notRequired(),
+    }),
   firstSideDish: Yup.string()
     .max(100)
     .when('closed', {
@@ -45,27 +52,35 @@ const defaultSchemaValidator = {
 class Menu {
   async add(req, res) {
     const schema = Yup.object().shape(defaultSchemaValidator);
-
     await schema.validate(req.body);
     const {
       salad,
       mainCourse,
+      vegetarian,
       firstSideDish,
       secondSideDish,
       dessert,
       day,
       closed,
     } = req.body;
-
-    const menu = await MenuModel.insert(['*'], {
-      salad,
-      mainCourse,
-      firstSideDish,
-      secondSideDish,
-      dessert,
-      day,
-      closed,
-    });
+    let menu;
+    if (!closed) {
+      menu = await MenuModel.insert(['*'], {
+        salad,
+        mainCourse,
+        vegetarian,
+        firstSideDish,
+        secondSideDish,
+        dessert,
+        day,
+        closed,
+      });
+    } else {
+      menu = await MenuModel.insert(['*'], {
+        day,
+        closed,
+      });
+    }
 
     return res.status(201).json(...menu);
   }
@@ -87,12 +102,17 @@ class Menu {
 
   async update(req, res) {
     const schema = Yup.object().shape(defaultSchemaValidator);
+    const schema2 = Yup.object().shape({
+      id: Yup.number().required(),
+    });
 
     await schema.validate(req.body);
+    await schema2.validate(req.params);
 
     const {
       salad,
       mainCourse,
+      vegetarian,
       firstSideDish,
       secondSideDish,
       dessert,
@@ -100,12 +120,15 @@ class Menu {
       closed,
     } = req.body;
 
+    const { id } = req.params;
+
     const menu = await MenuModel.update(
       ['*'],
-      { day },
+      { id },
       {
         salad,
         mainCourse,
+        vegetarian,
         firstSideDish,
         secondSideDish,
         dessert,
@@ -119,12 +142,12 @@ class Menu {
 
   async remove(req, res) {
     const schema = Yup.object().shape({
-      day: Yup.date().required(),
+      id: Yup.number().required(),
     });
 
-    await schema.validate(req.query);
-    const { day } = req.query;
-    await MenuModel.delete(['*'], { day });
+    await schema.validate(req.params);
+    const { id } = req.params;
+    await MenuModel.delete(['*'], { id });
 
     return res.sendStatus(204);
   }

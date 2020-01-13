@@ -13,7 +13,7 @@ class CreationConfirmationMail {
       template: 'creation-confirmation',
       context: {
         name,
-        confirmationUrl: `${process.env.FRONTEND_URL}/users/creation-confirmation/?confirmation_token=${confirmationToken}`,
+        confirmationUrl: `${process.env.FRONTEND_URL}/confirmacao-criacao?confirmation_token=${confirmationToken}`,
       },
     });
   }

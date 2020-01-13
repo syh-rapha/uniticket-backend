@@ -7,8 +7,8 @@ router.get('/', Menu.get);
 
 router.post('/', Menu.add);
 
-router.put('/', Menu.update);
+router.put('/:id', Menu.update);
 
-router.delete('/', Menu.remove);
+router.delete('/:id', Menu.remove);
 
 export default router;

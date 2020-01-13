@@ -1,11 +1,12 @@
 import express from 'express';
 import Users from '../controllers/users';
 import authenticationMiddleware from '../middlewares/authentication';
-import aclMiddleware from '../middlewares/acl';
 
 const router = express.Router();
 
-router.post('/', authenticationMiddleware, aclMiddleware, Users.create);
+router.post('/', Users.create);
+
+router.get('/credits', authenticationMiddleware, Users.getCredits);
 
 router.post('/login', Users.login);
 

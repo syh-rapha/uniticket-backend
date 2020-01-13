@@ -13,7 +13,7 @@ class RecoveryPasswordMail {
       template: 'reset-password',
       context: {
         name,
-        resetUrl: `${process.env.FRONTEND_URL}/users/reset-password/?reset_token=${resetToken}`,
+        resetUrl: `${process.env.FRONTEND_URL}/redefinir-senha?reset_token=${resetToken}`,
       },
     });
   }

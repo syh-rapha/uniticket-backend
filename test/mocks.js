@@ -57,8 +57,42 @@ export const seedIngredients = async () => {
       name: 'Maça',
       type: 'dessert',
     },
+    {
+      name: 'PTS',
+      type: 'vegetarian',
+    },
+    {
+      name: 'Torta de Lentilha',
+      type: 'vegetarian',
+    },
   ];
-  await db.batchInsert('ingredients', ingredients, 9);
+  return db.batchInsert('ingredients', ingredients, 9);
+};
+
+export const seedAcl = async () => {
+  const acl = [
+    {
+      route: '/transactions/acquire-credits',
+      method: '{"POST"}',
+      authorized: '{"admin", "student", "servant", "visitor"}',
+    },
+    {
+      route: '/ingredients',
+      method: '{"GET", "POST", "PUT", "DELETE"}',
+      authorized: '{"admin"}',
+    },
+    {
+      route: '/menu',
+      method: '{"POST", "PUT", "DELETE"}',
+      authorized: '{"admin"}',
+    },
+    {
+      route: '/menu',
+      method: '{"GET"}',
+      authorized: '{"admin", "student", "servant", "visitor"}',
+    },
+  ];
+  return db.batchInsert('acl', acl, 4);
 };
 
 export const noop = () => {};

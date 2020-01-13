@@ -6,10 +6,14 @@ exports.up = async knex => {
       .unsigned();
     tbl.string('name', [100]).unique();
     tbl
-      .enu('type', ['salad', 'main_course', 'side_dish', 'dessert'], {
-        userNative: true,
-        enumName: 'ingredient_type',
-      })
+      .enu(
+        'type',
+        ['salad', 'main_course', 'vegetarian', 'side_dish', 'dessert'],
+        {
+          userNative: true,
+          enumName: 'ingredient_type',
+        }
+      )
       .defaultTo('main_course')
       .notNullable();
   });
