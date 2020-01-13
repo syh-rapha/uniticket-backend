@@ -121,21 +121,32 @@ class Menu {
     } = req.body;
 
     const { id } = req.params;
-
-    const menu = await MenuModel.update(
-      ['*'],
-      { id },
-      {
-        salad,
-        mainCourse,
-        vegetarian,
-        firstSideDish,
-        secondSideDish,
-        dessert,
-        day,
-        closed,
-      }
-    );
+    let menu;
+    if (!closed) {
+      menu = await MenuModel.update(
+        ['*'],
+        { id },
+        {
+          salad,
+          mainCourse,
+          vegetarian,
+          firstSideDish,
+          secondSideDish,
+          dessert,
+          day,
+          closed,
+        }
+      );
+    } else {
+      menu = await MenuModel.update(
+        ['*'],
+        { id },
+        {
+          day,
+          closed,
+        }
+      );
+    }
 
     return res.status(200).json(...menu);
   }

@@ -7,7 +7,8 @@ class Transactions {
     const schema = Yup.object().shape({
       creditsQuantity: Yup.number()
         .moreThan(0)
-        .required('Credits quantity should be more than 0'),
+        .max(50)
+        .required('Credits quantity should be between 0 and 50'),
     });
 
     await schema.validate(req.body);
